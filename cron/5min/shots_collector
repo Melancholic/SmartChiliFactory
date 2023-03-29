@@ -1,0 +1,32 @@
+#!/bin/sh
+
+if [[ ! -d $SHOTS_DIR ]]; then
+  echo $SHOTS_DIR
+  mkdir -p $SHOTS_DIR
+fi
+if [ -z "$RTSP_USER" ]
+then
+    echo "ERROR: RTSP_USER is not defined" 1>&2
+    exit 1 # terminate and indicate error
+fi
+if [ -z "$RTSP_PASSWD" ]
+then
+    echo "ERROR: RTSP_PASSWD is not defined" 1>&2
+    exit 1 # terminate and indicate error
+fi
+if [ -z "$RTSP_HOST" ]
+then
+    echo "ERROR: RTSP_HOST is not defined" 1>&2
+    exit 1 # terminate and indicate error
+fi
+
+RTSP_CAM_URL=$RTSP_USER:$RTSP_PASSWD@$RTSP_HOST/stream1
+OUT_DIR="$SHOTS_DIR/$(date +"%Y")"
+
+mkdir -p "$OUT_DIR"
+
+OUT_FILE="$OUT_DIR/cam0_$(date +"%Y%m%d%H%M%S").jpg"
+
+#ffmpeg -rtsp_transport tcp -i rtsp://$RTSP_CAM_URL -ss 00:00:01.50 -vframes 1 $OUT_FILE &&
+ffmpeg -rtsp_transport tcp -i rtsp://$RTSP_CAM_URL -ss 00:00:01.50 -vframes 1 $OUT_FILE -nostats -hide_banner -v 0 -loglevel quiet &&
+  echo "Fetched image from camera \"$OUT_FILE\""
