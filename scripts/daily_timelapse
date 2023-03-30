@@ -1,0 +1,11 @@
+#!/bin/sh
+YEAR=$(date +"%Y")
+DAILY_TL_DIR=$TIMELAPSES_DIR/$YEAR/daily
+if [[ ! -d $DAILY_TL_DIR ]]; then
+  mkdir -p $DAILY_TL_DIR
+fi
+
+OUT_FILE=$DAILY_TL_DIR/cam0_$(date +"%Y%m%d%H%M%S").mp4
+FFMPEG_INPUT_PARAMS="$(find $SHOTS_DIR/*/*.jpg -type f -ctime -1 | sort | awk '{print "-i \""$0"\""}' |  tr '\n' ' ')"
+FFMPEG_CMD="ffmpeg -framerate 30 -pattern_type glob $FFMPEG_INPUT_PARAMS -s:v 1980x1080 -c:v libx264 -crf 17 -pix_fmt yuv420p $OUT_FILE -nostats -hide_banner -v 0 -loglevel quiet"
+/bin/sh -c "$FFMPEG_CMD" &&  echo "Stored daily timelapse \"$OUT_FILE\""
