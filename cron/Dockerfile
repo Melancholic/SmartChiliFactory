@@ -1,7 +1,7 @@
 FROM alpine:3
 
 RUN apk upgrade -U \
- && apk add --no-cache ca-certificates ffmpeg libva-intel-driver tzdata
+ && apk add --no-cache ca-certificates ffmpeg tzdata
 RUN crontab -l | { cat; echo "*/5 * * * * run-parts /etc/periodic/5min"; } | crontab -
 RUN crontab -l | { cat; echo "0 8 * * * /bin/sh /opt/daily_timelapse"; } | crontab -
 
