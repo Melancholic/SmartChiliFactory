@@ -5,7 +5,12 @@ if [[ ! -d $DAILY_TL_DIR ]]; then
   mkdir -p $DAILY_TL_DIR
 fi
 
-OUT_FILE=$DAILY_TL_DIR/cam0_$(date +"%Y%m%d%H%M%S").mp4
-FFMPEG_INPUT_PARAMS="$(find $SHOTS_DIR/*/*.jpg -type f -ctime -1 | sort | awk '{print "-i \""$0"\""}' |  tr '\n' ' ')"
-FFMPEG_CMD="ffmpeg -framerate 30 -pattern_type glob $FFMPEG_INPUT_PARAMS -s:v 1980x1080 -c:v libx264 -crf 17 -pix_fmt yuv420p $OUT_FILE -nostats -hide_banner -v 0 -loglevel quiet"
-/bin/sh -c "$FFMPEG_CMD" &&  echo "Stored daily timelapse \"$OUT_FILE\""
+OUT_FILE_ID=$(date +"%Y%m%d%H%M%S")
+OUT_FILE_NAME=cam0_$OUT_FILE_ID
+OUT_FILE=$DAILY_TL_DIR/cam0_$OUT_FILE_ID.mp4
+FFMPEG_ARGS_FILE=/tmp/ffmpegargs_$OUT_FILE_NAME.txt
+
+find $SHOTS_DIR/*/*.jpg -type f -ctime -1 | sort | awk '{print "file \x27"$0"\x27"}' >$FFMPEG_ARGS_FILE
+ffmpeg -f concat -safe 0 -r 30 -i $FFMPEG_ARGS_FILE -s:v 1980x1080 -c:v libx264 -crf 17 -pix_fmt yuv420p -r 30 $OUT_FILE -nostats -hide_banner -v 0 -loglevel quiet \
+ && echo "Stored daily timelapse \"$OUT_FILE\""  \
+ && rm -rf $FFMPEG_ARGS_FILE
