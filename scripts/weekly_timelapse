@@ -19,10 +19,11 @@ do
   start_date=$(date -d "-$day days" +'%Y-%m-%d 10:00:00')
   end_date=$(date -d "-$day days" +'%Y-%m-%d 17:01:00')
   find $SHOTS_DIR/*/*.jpg -type f \
-   -newerct "${start_date}" \! -newerct "${end_date}" \
-   | sort | awk '{print "file \x27"$0"\x27"}' >> $FFMPEG_INPUT_FILE
+  -newerct "${start_date}" \! -newerct "${end_date}" \
+  | sort | awk '{print "file \x27"$0"\x27"}' >> $FFMPEG_INPUT_FILE
 done
-cat $FFMPEG_INPUT_FILE | sort > $FFMPEG_INPUT_FILE
+
+sort -o $FFMPEG_INPUT_FILE $FFMPEG_INPUT_FILE
 
 bash $SCRIPTS_DIR/_make_timelapse $FFMPEG_INPUT_FILE $OUT_FILE $TYPE $TIMESTAMP $CAM0 \
   && echo "Saved $TYPE timelapse \"$OUT_FILE\""  \

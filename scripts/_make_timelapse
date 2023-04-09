@@ -25,4 +25,4 @@ fi
 
 CAM_NUM=${CAM_NUM:-cam0}
 
-ffmpeg -f concat -safe 0 -r 30 -i "$FFMPEG_ARGS_FILE" -s:v 1980x1080 -c:v libx264 -crf 17 -pix_fmt yuv420p -r 30 $OUT_FILE  -nostats -hide_banner -v 0 -loglevel quiet
+ffmpeg -f concat -safe 0 -r 30 -i "$FFMPEG_ARGS_FILE" -s:v 1980x1080 -c:v libx264 -crf 17 -pix_fmt yuv420p -r 30 $OUT_FILE -nostats -hide_banner -v 0 -loglevel quiet
