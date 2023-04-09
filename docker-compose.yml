@@ -9,6 +9,8 @@ services:
      - LOG_DIR=/var/log/smart-chili-factory/logs
      - SHOTS_DIR=/var/smart-chili-factory/shots
      - TIMELAPSES_DIR=/var/smart-chili-factory/timelapses
+     - SCRIPTS_DIR=/var/smart-chili-factory/scripts
+     - TIMESTAMP_PATTERN=%Y%m%d%H%M%S
     volumes:
       - /tmp/smart-chili-factory:/tmp/
       - /var/smart-chili-factory/:/var/smart-chili-factory/

@@ -1,5 +1,5 @@
 #!/bin/bash
-TYPE="daily"
+TYPE="weekly"
 YEAR=$(date +"%Y")
 CAM0="cam0"
 TL_DIR=$TIMELAPSES_DIR/$TYPE/$YEAR
@@ -13,7 +13,16 @@ OUT_FILE_NAME="${CAM0}_${TIMESTAMP}"
 OUT_FILE=$TL_DIR/$OUT_FILE_NAME.mp4
 FFMPEG_INPUT_FILE="/tmp/ffmpegargs_${TYPE}_timelapse_${OUT_FILE_NAME}.txt"
 
-find $SHOTS_DIR/*/*.jpg -type f -ctime -1 | sort | awk '{print "file \x27"$0"\x27"}' > $FFMPEG_INPUT_FILE
+echo "" > $FFMPEG_INPUT_FILE
+for day in {0..6}
+do
+  start_date=$(date -d "-$day days" +'%Y-%m-%d 10:00:00')
+  end_date=$(date -d "-$day days" +'%Y-%m-%d 17:01:00')
+  find $SHOTS_DIR/*/*.jpg -type f \
+   -newerct "${start_date}" \! -newerct "${end_date}" \
+   | sort | awk '{print "file \x27"$0"\x27"}' >> $FFMPEG_INPUT_FILE
+done
+cat $FFMPEG_INPUT_FILE | sort > $FFMPEG_INPUT_FILE
 
 bash $SCRIPTS_DIR/_make_timelapse $FFMPEG_INPUT_FILE $OUT_FILE $TYPE $TIMESTAMP $CAM0 \
   && echo "Saved $TYPE timelapse \"$OUT_FILE\""  \
