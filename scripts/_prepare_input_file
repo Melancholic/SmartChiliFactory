@@ -1,0 +1,24 @@
+#!/bin/bash
+FFMPEG_INPUT_FILE=$1
+SHOTS_DIR=$2
+DAYS_PERIOD=$3
+DAYS_OFFSET=$4
+START_TIME=$5
+END_TIME=$6
+
+if [[ ! -d $SHOTS_DIR ]]; then
+  echo $SHOTS_DIR
+  mkdir -p $SHOTS_DIR
+fi
+
+echo "" > $FFMPEG_INPUT_FILE
+for ((day=$DAYS_OFFSET; day <= $DAYS_PERIOD; day++))
+do
+  start_date=$(date -d "-$day days" +"%Y-%m-%d $START_TIME")
+  end_date=$(date -d "-$day days" +"%Y-%m-%d $END_TIME")
+  find $SHOTS_DIR/*/*.jpg -type f \
+  -newerct "${start_date}" \! -newerct "${end_date}" \
+  | sort | awk '{print "file \x27"$0"\x27"}' >> $FFMPEG_INPUT_FILE
+done
+
+sort -o $FFMPEG_INPUT_FILE $FFMPEG_INPUT_FILE

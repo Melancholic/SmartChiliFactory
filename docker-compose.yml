@@ -1,19 +1,20 @@
 version: '3'
 services:
-  smart-chili-factory-cron:
+  smart-chilli-factory-cron:
     restart: always
-    container_name: smart-chili-factory-cron
+    container_name: smart-chilli-factory-cron
     build:
       context: ./modules/cron_tasks
     environment:
-     - LOG_DIR=/var/log/smart-chili-factory/logs
-     - SHOTS_DIR=/var/smart-chili-factory/shots
-     - TIMELAPSES_DIR=/var/smart-chili-factory/timelapses
-     - SCRIPTS_DIR=/var/smart-chili-factory/scripts
+     - LOG_DIR=/var/log/smart-chilli-factory/logs
+     - SHOTS_DIR=/var/smart-chilli-factory/shots
+     - TIMELAPSES_DIR=/var/smart-chilli-factory/timelapses
+     - SCRIPTS_DIR=/var/smart-chilli-factory/scripts
      - TIMESTAMP_PATTERN=%Y%m%d%H%M%S
     volumes:
-      - /tmp/smart-chili-factory:/tmp/
-      - /var/smart-chili-factory/:/var/smart-chili-factory/
-      - ./scripts/:/var/smart-chili-factory/scripts/
+      - /tmp/smart-chilli-factory:/tmp/
+      - /var/smart-chilli-factory/:/var/smart-chilli-factory/
+      - ./scripts/:/var/smart-chilli-factory/scripts/
     env_file:
-      - env/secrets.env
+      - env/secrets-common.env
+      - env/secrets-rtsp.env

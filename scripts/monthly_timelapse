@@ -1,5 +1,5 @@
 #!/bin/bash
-TYPE="daily"
+TYPE="monthly"
 YEAR=$(date +"%Y")
 CAM0="cam0"
 TL_DIR=$TIMELAPSES_DIR/$TYPE/$YEAR
@@ -13,7 +13,10 @@ OUT_FILE_NAME="${CAM0}_${TIMESTAMP}"
 OUT_FILE=$TL_DIR/$OUT_FILE_NAME.mp4
 ffmpeg_input_file="/tmp/ffmpegargs_${TYPE}_timelapse_${OUT_FILE_NAME}.txt"
 
-bash $SCRIPTS_DIR/_prepare_input_file $ffmpeg_input_file $SHOTS_DIR 1 1 "00:00:00" "23:59:00" \
+start_month_date=$(date -d "-1 months" +%s)
+days_in_month=($(date +%s)-$start_month_date)/86400
+
+bash $SCRIPTS_DIR/_prepare_input_file $ffmpeg_input_file $SHOTS_DIR $days_in_month 0 "09:00:00" "18:00:00" \
   && bash $SCRIPTS_DIR/_make_timelapse $ffmpeg_input_file $OUT_FILE $TYPE $TIMESTAMP $CAM0 \
-    && echo "Saved $TYPE timelapse \"$OUT_FILE\""  \
-    && rm -rf $ffmpeg_input_file
+      && echo "Saved $TYPE timelapse \"$OUT_FILE\""  \
+      && rm -rf $ffmpeg_input_file
