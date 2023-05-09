@@ -17,6 +17,6 @@ start_month_date=$(date -d "-1 months" +%s)
 days_in_month=($(date +%s)-$start_month_date)/86400
 
 bash $SCRIPTS_DIR/_prepare_input_file $ffmpeg_input_file $SHOTS_DIR $days_in_month 0 "09:00:00" "18:00:00" \
-  && bash $SCRIPTS_DIR/_make_timelapse $ffmpeg_input_file $OUT_FILE $TYPE $TIMESTAMP $CAM0 \
+  && bash $SCRIPTS_DIR/_make_timelapse $ffmpeg_input_file $OUT_FILE $TYPE $TIMESTAMP $CAM0 60 \
       && echo "Saved $TYPE timelapse \"$OUT_FILE\""  \
       && rm -rf $ffmpeg_input_file
